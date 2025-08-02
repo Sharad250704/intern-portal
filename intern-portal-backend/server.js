@@ -7,11 +7,15 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors());
+
+app.use(cors({
+  origin: 'https://intern-portal-iota.vercel.app', 
+  credentials: true
+}));
+
 app.use(express.json());
 
-// Dummy data for interns
+
 const interns = [
   {
     id: 1,
@@ -127,15 +131,12 @@ app.get('/api/intern/:id', (req, res) => {
 });
 
 
-// Dummy login endpoint
 app.post('/api/login', (req, res) => {
   try {
     const { email, password } = req.body;
     
     console.log('Login attempt for:', email);
     
-    // Dummy authentication - just check if email exists
-    // For demo purposes, accept any password
     const intern = interns.find(i => i.email === email);
     
     if (!intern) {
@@ -145,7 +146,7 @@ app.post('/api/login', (req, res) => {
       });
     }
     
-    // For demo: accept any password, just check if password field is provided
+   
     if (!password || password.trim() === '') {
       return res.status(401).json({
         success: false,
@@ -153,7 +154,7 @@ app.post('/api/login', (req, res) => {
       });
     }
     
-    // Return intern data (excluding sensitive info)
+   
     const { password: _, ...internData } = intern;
     res.json({
       success: true,
@@ -170,14 +171,14 @@ app.post('/api/login', (req, res) => {
 });
 
 
-// Dummy signup endpoint
+
 app.post('/api/signup', (req, res) => {
   try {
     const { name, email, password } = req.body;
     
     console.log('Signup attempt:', { name, email, password: '***' });
     
-    // Validate required fields
+  
     if (!name || !email || !password) {
       return res.status(400).json({
         success: false,
@@ -185,7 +186,7 @@ app.post('/api/signup', (req, res) => {
       });
     }
     
-    // Check if email already exists
+   
     const existingIntern = interns.find(i => i.email === email);
     if (existingIntern) {
       return res.status(400).json({
@@ -194,7 +195,7 @@ app.post('/api/signup', (req, res) => {
       });
     }
     
-    // Create new intern (dummy data)
+    
     const newIntern = {
       id: interns.length + 1,
       name: name,
